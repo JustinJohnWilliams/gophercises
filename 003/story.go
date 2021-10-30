@@ -77,12 +77,26 @@ var defaultTemplate = `
     </body>
 </html>`
 
-func NewHandler(s Story) http.Handler {
-	return handler{s}
+//READ: https://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis
+type HandlerOption func(h *handler)
+
+func WithTemplate(t *template.Template) HandlerOption {
+	return func(h *handler) {
+		h.t = t
+	}
+}
+
+func NewHandler(s Story, opts ...HandlerOption) http.Handler {
+	h := handler{s, tpl} // default options in handler
+	for _, opt := range opts {
+		opt(&h)
+	}
+	return h
 }
 
 type handler struct {
 	s Story
+	t *template.Template
 }
 
 func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -94,7 +108,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	path = path[1:]
 
 	if chapter, ok := h.s[path]; ok {
-		err := tpl.Execute(w, chapter)
+		err := h.t.Execute(w, chapter)
 
 		if err != nil {
 			log.Printf("%v", err)
