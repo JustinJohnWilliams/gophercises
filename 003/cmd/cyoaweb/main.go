@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"text/template"
 
 	"github.com/justinjohnwilliams/cyoa"
 )
@@ -28,9 +27,7 @@ func main() {
 		panic(err)
 	}
 
-	// %+v verbose print with field names
-	tpl := template.Must(template.New("").Parse("WADDLE WDDLE"))
-	h := cyoa.NewHandler(story, cyoa.WithTemplate(tpl))
+	h := cyoa.NewHandler(story)
 	fmt.Printf("Starting the server on %d\n", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), h))
 }
