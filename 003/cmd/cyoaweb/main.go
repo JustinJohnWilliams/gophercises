@@ -34,8 +34,11 @@ func main() {
 	h := cyoa.NewHandler(story,
 		cyoa.WithTemplate(tpl),
 		cyoa.WithPathFunc(someOtherPathFn))
+
+	mux := http.NewServeMux()
+	mux.Handle("/foobar/", h)
 	fmt.Printf("Starting the server on %d\n", *port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), h))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), mux))
 }
 
 func someOtherPathFn(r *http.Request) string {
