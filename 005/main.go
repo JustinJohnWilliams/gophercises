@@ -3,16 +3,31 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
+	"net/http"
+	"os"
 )
 
 func main() {
-	urlFlag := flag.String("url", "https://gophercises.ccom/", "url of the site to build sitemap for")
+	urlFlag := flag.String("url", "https://gophercises.com", "url of the site to build sitemap for")
 	flag.Parse()
 
 	fmt.Println(*urlFlag)
+
+	resp, err := http.Get(*urlFlag)
+	if err != nil {
+		panic(err)
+	}
+
+	defer resp.Body.Close()
+
+	fmt.Println("done!")
+
+	io.Copy(os.Stdout, resp.Body)
+
 	/*
 		TODO:
-			1. GET the webpage
+			1. GET the webpage (done)
 			2. parse all the links on the page (use the package from 004)
 			3. build proper url's for each link
 			4. remove links with diff domain
