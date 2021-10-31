@@ -19,21 +19,23 @@ func Parse(r io.Reader) ([]Link, error) {
 	if err != nil {
 		return nil, err
 	}
-	dfs(doc, "")
+	nodes := linkNodes(doc)
+	for _, node := range nodes {
+		fmt.Println(node)
+	}
+
 	return nil, nil
 }
 
-func dfs(n *html.Node, padding string) {
-	msg := n.Data
-	if n.Type == html.ElementNode {
-		msg = "<" + msg + ">"
+func linkNodes(n *html.Node) []*html.Node {
+	if n.Type == html.ElementNode && n.Data == "a" {
+		return []*html.Node{n}
 	}
-	fmt.Println(padding, msg)
-	// NOTE: implementing depth first search
-	// for loop assigns c to first child, if it's not nil, do the thing
-	// on the last element change c to next sibling?? not sure how for loops work in go. wtf
+	var ret []*html.Node
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		dfs(c, padding+"  ")
+		// NOTE: the linkNodes returns a slice, the `...` returns individual elements of the slice
+		ret = append(ret, linkNodes(c)...)
 	}
 
+	return ret
 }
