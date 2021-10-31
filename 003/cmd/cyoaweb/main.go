@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"text/template"
 
 	"github.com/justinjohnwilliams/cyoa"
 )
@@ -28,14 +27,8 @@ func main() {
 		panic(err)
 	}
 
-	tpl := template.Must(template.New("").Parse(cyoa.FooBarTemplate))
+	h := cyoa.NewHandler(story)
 
-	h := cyoa.NewHandler(story,
-		cyoa.WithTemplate(tpl),
-		cyoa.WithPathParserFunc(cyoa.FooBarPathParserFn))
-
-	mux := http.NewServeMux()
-	mux.Handle("/foobar/", h)
 	fmt.Printf("Starting the server on %d\n", *port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), mux))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), h))
 }
