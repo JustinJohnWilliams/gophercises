@@ -53,7 +53,7 @@ func parseText(n *html.Node) string {
 
 	var ret string
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		ret += parseText(c) + " "
+		ret += parseText(c)
 	}
 
 	return strings.Join(strings.Fields(ret), " ")

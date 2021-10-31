@@ -29,5 +29,7 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("%+v\n", links)
+	for _, link := range links {
+		fmt.Printf("%+v\n", link)
+	}
 }
