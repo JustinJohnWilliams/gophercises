@@ -3,9 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io"
 	"net/http"
-	"os"
 )
 
 func main() {
@@ -21,9 +19,7 @@ func main() {
 
 	defer resp.Body.Close()
 
-	fmt.Println("done!")
-
-	io.Copy(os.Stdout, resp.Body)
+	links, _ := link.Parse(resp.Body)
 
 	/*
 		TODO:
